@@ -1,0 +1,19 @@
+# Python Cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Local Database
+*.db
+*.db-journal
+
+# Environment settings
+.env
+
+# Internal Tracker Specifications (Never publish to public GitHub)
+demo.html
+AGENTS.md
+TRACK-1A-enterprise-portfolio.md
+Mega ARCHITECTURE for all tracks.md
+*Zone.Identifier
