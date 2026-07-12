@@ -104,6 +104,3 @@ To secure critical communications and safeguard enterprise finances, the pipelin
    ```bash
    uvicorn main:app --port 8002 --reload
    ```
-
-3. **Access the Console**:
-   Open **[http://localhost:8002](http://localhost:8002)** in your browser, select a customer (e.g. *TechStart Inc*), and trigger a mock event alert to see the Swarm coordinate!
