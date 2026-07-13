@@ -79,29 +79,29 @@ The swarm shifts customer service from isolated support tickets to an end-to-end
 
 ```mermaid
 graph TD
-    EventStream[Customer Event Stream: Churn Risk, Failed Pay, Renewal] --> Super[Lifecycle Orchestrator]
+    EventStream["Customer Event Stream: Churn Risk, Failed Pay, Renewal"] --> Super["Lifecycle Orchestrator"]
     
-    subgraph Specialist Customer Swarm
-        Super -->|1. Build Profile| Assembler[Context Assembler Agent: SQL/NoSQL Stub]
+    subgraph "Specialist Customer Swarm"
+        Super -->|1. Build Profile| Assembler["Context Assembler Agent: SQL/NoSQL Stub"]
         Assembler -->|Customer 360 Profile| Super
         
-        Super -->|2a. Billing/Dispute Ticket| Diagnostics[Diagnostic & Resolution Specialist]
-        Super -->|2b. Churn/Decline Alert| Proactive[Proactive Outreach Specialist]
+        Super -->|2a. Billing/Dispute Ticket| Diagnostics["Diagnostic & Resolution Specialist"]
+        Super -->|2b. Churn/Decline Alert| Proactive["Proactive Outreach Specialist"]
         
-        Diagnostics -->|Settle & Refund Proposal| HITL_Dispute{HITL Gate 2: Settle Sign-Off}
-        Proactive -->|Custom Incentive Strategy| HITL_Outreach{HITL Gate 1: Campaign Sign-Off}
+        Diagnostics -->|Settle & Refund Proposal| HITL_Dispute{"HITL Gate 2: Settle Sign-Off"}
+        Proactive -->|Custom Incentive Strategy| HITL_Outreach{"HITL Gate 1: Campaign Sign-Off"}
     end
     
-    HITL_Outreach -->|Approved Campaign| QAAgent[QA Compliance Auditor Agent]
+    HITL_Outreach -->|Approved Campaign| QAAgent["QA Compliance Auditor Agent"]
     HITL_Dispute -->|Approved Account Mod| QAAgent
     
     HITL_Outreach -->|Rejected with Revision| Proactive
     HITL_Dispute -->|Rejected with Revision| Diagnostics
     
-    QAAgent -->|Brand & Policy Pass| Deploy[Trigger Outreach & Save Logs]
-    QAAgent -.->|Audit Trails| SQLite[(SQLite CRM & Interaction Audits)]
+    QAAgent -->|Brand & Policy Pass| Deploy["Trigger Outreach & Save Logs"]
+    QAAgent -.->|Audit Trails| SQLite[("SQLite CRM and Interaction Audits")]
     
-    Deploy --> Console[UI Customer 360 Dashboard]
+    Deploy --> Console["UI Customer 360 Dashboard"]
 ```
 
 ### Observability data path
