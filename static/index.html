@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>oneserv-agent — Customer Lifecycle Governance Panel</title>
+    <title>oneserv-agent — Multi-Provider & MCP Observability</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="app.css">
 </head>
 <body>
-    <!-- Radial Backing Glows -->
     <div class="radial-glow glow-top"></div>
     <div class="radial-glow glow-bottom"></div>
 
@@ -18,198 +17,342 @@
         <!-- HEADER -->
         <header class="app-header">
             <div class="logo-area">
-                <span class="logo-icon">🚀</span>
+                <span class="logo-icon">⬡</span>
                 <div class="logo-text">
                     <h1>oneserv-agent</h1>
-                    <p>Customer Lifecycle Swarm Nervous System</p>
+                    <p>Multi-Provider Agents · MCP Bridge Control Plane</p>
                 </div>
             </div>
-            <div class="system-status">
-                <span class="pulse-indicator"></span>
-                <span>Swarm Monitor: ONLINE</span>
+            <div class="header-right">
+                <nav class="view-tabs" role="tablist">
+                    <button class="view-tab active" data-view="observe" onclick="switchView('observe')">Observability</button>
+                    <button class="view-tab" data-view="swarm" onclick="switchView('swarm')">Lifecycle Swarm</button>
+                </nav>
+                <div class="system-status">
+                    <span class="pulse-indicator"></span>
+                    <span id="header-status">Control Plane: ONLINE</span>
+                </div>
             </div>
         </header>
 
-        <!-- SYSTEM ANALYTICS METRICS -->
-        <section class="metrics-grid">
-            <div class="metric-card glass-card">
-                <div class="card-radial-glow blue"></div>
-                <div class="metric-label">Active Monitored Profiles</div>
-                <h2 id="metric-accounts" class="metric-value">3</h2>
-            </div>
-            <div class="metric-card glass-card">
-                <div class="card-radial-glow green"></div>
-                <div class="metric-label">Active Support Health</div>
-                <h2 id="metric-health" class="metric-value">91.4%</h2>
-            </div>
-            <div class="metric-card glass-card">
-                <div class="card-radial-glow purple"></div>
-                <div class="metric-label">Completed Interventions</div>
-                <h2 id="metric-interventions" class="metric-value">0</h2>
-            </div>
-            <div class="metric-card glass-card">
-                <div class="card-radial-glow gold"></div>
-                <div class="metric-label">Compliance Pass Rating</div>
-                <h2 id="metric-compliance" class="metric-value">100%</h2>
-            </div>
-        </section>
+        <!-- ═══════════════ OBSERVABILITY VIEW ═══════════════ -->
+        <div id="view-observe" class="view-panel active">
+            <section class="metrics-grid" id="obs-metrics">
+                <div class="metric-card glass-card">
+                    <div class="card-radial-glow blue"></div>
+                    <div class="metric-label">Providers Online</div>
+                    <h2 id="m-providers" class="metric-value">—</h2>
+                    <div class="metric-sub" id="m-providers-sub">of 0 registered</div>
+                </div>
+                <div class="metric-card glass-card">
+                    <div class="card-radial-glow purple"></div>
+                    <div class="metric-label">Agent Invocations</div>
+                    <h2 id="m-invocations" class="metric-value">0</h2>
+                    <div class="metric-sub" id="m-invocations-sub">avg — ms</div>
+                </div>
+                <div class="metric-card glass-card">
+                    <div class="card-radial-glow green"></div>
+                    <div class="metric-label">MCP Bridges Connected</div>
+                    <h2 id="m-bridges" class="metric-value">—</h2>
+                    <div class="metric-sub" id="m-bridges-sub">0 tools exposed</div>
+                </div>
+                <div class="metric-card glass-card">
+                    <div class="card-radial-glow gold"></div>
+                    <div class="metric-label">MCP Tool Calls</div>
+                    <h2 id="m-mcp-calls" class="metric-value">0</h2>
+                    <div class="metric-sub" id="m-mcp-calls-sub">error rate 0%</div>
+                </div>
+            </section>
 
-        <!-- MAIN GRID LAYOUT -->
-        <div class="dashboard-grid">
-            
-            <!-- LEFT COLUMN: CUSTOMERS & PIPELINE STATE -->
-            <div class="left-column">
-                
-                <!-- CUSTOMER 360 PANEL -->
+            <div class="toolbar glass-card">
+                <div class="toolbar-left">
+                    <span class="toolbar-title">Live Control</span>
+                    <span class="pill" id="mode-pill">mode: multi</span>
+                </div>
+                <div class="toolbar-actions">
+                    <button class="btn btn-secondary" onclick="healthCheckAll()">↻ Health Check All</button>
+                    <button class="btn btn-secondary" onclick="pingAllBridges()">↗ Ping MCP Bridges</button>
+                    <button class="btn btn-primary" onclick="simulateTraffic()">▶ Simulate Agent Traffic</button>
+                </div>
+            </div>
+
+            <div class="dashboard-grid observe-grid">
+                <!-- Providers -->
+                <div class="glass-card panel-tall">
+                    <div class="card-header">
+                        <h3>🔌 LLM Providers</h3>
+                        <span class="pill success" id="providers-pill">Live</span>
+                    </div>
+                    <div class="provider-list" id="provider-list">
+                        <!-- JS -->
+                    </div>
+                </div>
+
+                <!-- Agent bindings -->
+                <div class="glass-card panel-tall">
+                    <div class="card-header">
+                        <h3>🤖 Agent → Provider Bindings</h3>
+                        <span class="pill">Routing</span>
+                    </div>
+                    <div class="agent-list" id="agent-list">
+                        <!-- JS -->
+                    </div>
+                    <p class="hint-text">Rebind agents to different providers to observe multi-provider routing in real time.</p>
+                </div>
+            </div>
+
+            <div class="dashboard-grid observe-grid">
+                <!-- MCP Bridges -->
+                <div class="glass-card panel-tall">
+                    <div class="card-header">
+                        <h3>🌉 MCP Bridges</h3>
+                        <span class="pill" id="mcp-pill">0 connected</span>
+                    </div>
+                    <div class="bridge-list" id="bridge-list">
+                        <!-- JS -->
+                    </div>
+                </div>
+
+                <!-- Tools catalog -->
+                <div class="glass-card panel-tall">
+                    <div class="card-header">
+                        <h3>🛠 MCP Tool Catalog</h3>
+                        <span class="pill">tools/list</span>
+                    </div>
+                    <div class="tool-table-wrap">
+                        <table class="history-table tool-table">
+                            <thead>
+                                <tr>
+                                    <th>Bridge</th>
+                                    <th>Tool</th>
+                                    <th>Status</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="tool-rows"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-grid observe-grid">
+                <!-- Agent invocation log -->
                 <div class="glass-card">
                     <div class="card-header">
-                        <h3>👤 Unified Customer 360 Registry</h3>
-                        <span class="pill">Real-Time DB Joined</span>
+                        <h3>📡 Agent Invocations</h3>
+                        <span class="pill success">Streaming</span>
                     </div>
-                    
-                    <!-- Customer Select Grid -->
-                    <div class="customer-selection-row" id="customer-list">
-                        <!-- Populated by JS -->
-                    </div>
-
-                    <!-- Selected Customer Detailed Info -->
-                    <div class="customer-details-box" id="customer-details-card">
-                        <div class="details-grid">
-                            <div>
-                                <span class="detail-label">Subscription Tier</span>
-                                <p id="details-tier" class="detail-val">-</p>
-                            </div>
-                            <div>
-                                <span class="detail-label">Outstanding Invoices</span>
-                                <p id="details-balance" class="detail-val">-</p>
-                            </div>
-                            <div>
-                                <span class="detail-label">Invoice Status</span>
-                                <p id="details-invoice-status" class="detail-val">-</p>
-                            </div>
-                            <div>
-                                <span class="detail-label">Daily Active Usage</span>
-                                <p id="details-usage" class="detail-val">-</p>
-                            </div>
-                        </div>
-
-                        <!-- Manual Event Trigger Stream -->
-                        <div class="event-stream-container">
-                            <span class="detail-label">Simulate Customer Event Stream Trigger</span>
-                            <div class="event-btn-group">
-                                <button class="event-trigger-btn churn-btn" onclick="triggerEvent('Churn Threat: Usage Drop 80%')">⚠️ Low Usage Alert</button>
-                                <button class="event-trigger-btn dispute-btn" onclick="triggerEvent('Failed Payment: Outstanding Balance Collection Dispute')">💳 Failed Payment Alert</button>
-                            </div>
-                        </div>
+                    <div class="table-container compact">
+                        <table class="history-table">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Agent</th>
+                                    <th>Provider</th>
+                                    <th>Model</th>
+                                    <th>Latency</th>
+                                    <th>Tokens</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="invocation-rows"></tbody>
+                        </table>
                     </div>
                 </div>
 
-                <!-- PIPELINE STEPPER -->
-                <div class="glass-card" id="stepper-card">
+                <!-- MCP call log -->
+                <div class="glass-card">
                     <div class="card-header">
-                        <h3>🚀 Swarm Execution Progress</h3>
-                        <span id="active-status-pill" class="pill status-pill">NO ACTIVE CASE</span>
+                        <h3>🔗 MCP Tool Calls</h3>
+                        <span class="pill success">Streaming</span>
                     </div>
-                    <div class="stepper-horizontal">
-                        <div class="step-item" id="step-planning">
-                            <div class="step-circle">1</div>
-                            <span class="step-label">Planning</span>
-                        </div>
-                        <div class="step-line" id="line-planning"></div>
-                        <div class="step-item" id="step-g1">
-                            <div class="step-circle">2</div>
-                            <span class="step-label">Gate 1: Review</span>
-                        </div>
-                        <div class="step-line" id="line-g1"></div>
-                        <div class="step-item" id="step-g2">
-                            <div class="step-circle">3</div>
-                            <span class="step-label">Gate 2: Audit</span>
-                        </div>
-                        <div class="step-line" id="line-g2"></div>
-                        <div class="step-item" id="step-completed">
-                            <div class="step-circle">✓</div>
-                            <span class="step-label">Sent</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- HUMAN-IN-THE-LOOP PANEL -->
-                <div class="glass-card hitl-panel hidden" id="hitl-panel">
-                    <div class="card-header">
-                        <h3 id="hitl-title">🚦 Manual Intervention Review Required</h3>
-                        <span class="pill danger">ACTION NEEDED</span>
-                    </div>
-                    <p class="hitl-desc">The multi-agent state-machine has paused. Inspect assembled details in the inspector. Leave reviews or click Approve to proceed.</p>
-                    <div class="form-group">
-                        <label for="hitl-feedback">Approval comments / Revision requests</label>
-                        <textarea id="hitl-feedback" rows="2" placeholder="Input adjustment instructions if rejecting, otherwise click Approve..."></textarea>
-                    </div>
-                    <div class="btn-group">
-                        <button class="btn btn-secondary flex-1" onclick="submitHITL('REJECTED')">Reject & Request Revision</button>
-                        <button class="btn btn-primary flex-1" onclick="submitHITL('APPROVED')">Approve & Release</button>
+                    <div class="table-container compact">
+                        <table class="history-table">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Bridge</th>
+                                    <th>Tool</th>
+                                    <th>Agent</th>
+                                    <th>Latency</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="mcp-call-rows"></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
 
-            <!-- RIGHT COLUMN: REAL-TIME CONSOLE & INSPECTORS -->
-            <div class="right-column">
-                
-                <!-- TRACE CONSOLE -->
-                <div class="glass-card terminal-card">
-                    <div class="card-header">
-                        <h3>💬 Real-Time Swarm Traces</h3>
-                        <span class="pill success">Live Auditor Log</span>
-                    </div>
-                    <div class="terminal-body" id="terminal-logs">
-                        <div class="terminal-line system">Waiting for event stream trigger to capture lifecycle audits...</div>
-                    </div>
+            <!-- Event stream -->
+            <section class="glass-card terminal-card obs-terminal">
+                <div class="card-header">
+                    <h3>💬 Observability Event Stream</h3>
+                    <span class="pill success">Live</span>
                 </div>
-
-                <!-- SPECIALIST ASSETS INSPECTOR -->
-                <div class="glass-card inspector-card">
-                    <div class="tabs-header">
-                        <button class="tab-btn active" id="tab-btn-spec" onclick="switchTab('tab-spec')">Consolidated Customer Profile</button>
-                        <button class="tab-btn" id="tab-btn-outreach" onclick="switchTab('tab-outreach')">Draft Outreach copy</button>
-                    </div>
-                    <div class="tabs-body">
-                        <!-- Profile Assembled -->
-                        <div class="tab-pane active" id="tab-spec">
-                            <div class="empty-state">No profile loaded. Select a customer or trigger an event above.</div>
-                        </div>
-                        
-                        <!-- Proposed outreach copy -->
-                        <div class="tab-pane" id="tab-outreach">
-                            <div class="empty-state">No proposed communication draft yet. Trigger an active case pipeline.</div>
-                        </div>
-                    </div>
+                <div class="terminal-body" id="obs-events">
+                    <div class="terminal-line system">Waiting for provider / MCP activity…</div>
                 </div>
-            </div>
+            </section>
         </div>
 
-        <!-- RECENT HISTORIC CASES -->
-        <section class="glass-card historic-grid">
-            <div class="card-header">
-                <h3>📜 Recent Swarm Intervention History</h3>
-                <span class="pill">Historic Log</span>
+        <!-- ═══════════════ LIFECYCLE SWARM VIEW ═══════════════ -->
+        <div id="view-swarm" class="view-panel">
+            <section class="metrics-grid">
+                <div class="metric-card glass-card">
+                    <div class="card-radial-glow blue"></div>
+                    <div class="metric-label">Active Monitored Profiles</div>
+                    <h2 id="metric-accounts" class="metric-value">3</h2>
+                </div>
+                <div class="metric-card glass-card">
+                    <div class="card-radial-glow green"></div>
+                    <div class="metric-label">Active Support Health</div>
+                    <h2 id="metric-health" class="metric-value">91.4%</h2>
+                </div>
+                <div class="metric-card glass-card">
+                    <div class="card-radial-glow purple"></div>
+                    <div class="metric-label">Completed Interventions</div>
+                    <h2 id="metric-interventions" class="metric-value">0</h2>
+                </div>
+                <div class="metric-card glass-card">
+                    <div class="card-radial-glow gold"></div>
+                    <div class="metric-label">Compliance Pass Rating</div>
+                    <h2 id="metric-compliance" class="metric-value">100%</h2>
+                </div>
+            </section>
+
+            <div class="dashboard-grid">
+                <div class="left-column">
+                    <div class="glass-card">
+                        <div class="card-header">
+                            <h3>👤 Unified Customer 360 Registry</h3>
+                            <span class="pill">Real-Time DB Joined</span>
+                        </div>
+                        <div class="customer-selection-row" id="customer-list"></div>
+                        <div class="customer-details-box" id="customer-details-card">
+                            <div class="details-grid">
+                                <div>
+                                    <span class="detail-label">Subscription Tier</span>
+                                    <p id="details-tier" class="detail-val">-</p>
+                                </div>
+                                <div>
+                                    <span class="detail-label">Outstanding Invoices</span>
+                                    <p id="details-balance" class="detail-val">-</p>
+                                </div>
+                                <div>
+                                    <span class="detail-label">Invoice Status</span>
+                                    <p id="details-invoice-status" class="detail-val">-</p>
+                                </div>
+                                <div>
+                                    <span class="detail-label">Daily Active Usage</span>
+                                    <p id="details-usage" class="detail-val">-</p>
+                                </div>
+                            </div>
+                            <div class="event-stream-container">
+                                <span class="detail-label">Simulate Customer Event Stream Trigger</span>
+                                <div class="event-btn-group">
+                                    <button class="event-trigger-btn churn-btn" onclick="triggerEvent('Churn Threat: Usage Drop 80%')">⚠️ Low Usage Alert</button>
+                                    <button class="event-trigger-btn dispute-btn" onclick="triggerEvent('Failed Payment: Outstanding Balance Collection Dispute')">💳 Failed Payment Alert</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card" id="stepper-card">
+                        <div class="card-header">
+                            <h3>🚀 Swarm Execution Progress</h3>
+                            <span id="active-status-pill" class="pill status-pill">NO ACTIVE CASE</span>
+                        </div>
+                        <div class="stepper-horizontal">
+                            <div class="step-item" id="step-planning">
+                                <div class="step-circle">1</div>
+                                <span class="step-label">Planning</span>
+                            </div>
+                            <div class="step-line" id="line-planning"></div>
+                            <div class="step-item" id="step-g1">
+                                <div class="step-circle">2</div>
+                                <span class="step-label">Gate 1: Review</span>
+                            </div>
+                            <div class="step-line" id="line-g1"></div>
+                            <div class="step-item" id="step-g2">
+                                <div class="step-circle">3</div>
+                                <span class="step-label">Gate 2: Audit</span>
+                            </div>
+                            <div class="step-line" id="line-g2"></div>
+                            <div class="step-item" id="step-completed">
+                                <div class="step-circle">✓</div>
+                                <span class="step-label">Sent</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card hitl-panel hidden" id="hitl-panel">
+                        <div class="card-header">
+                            <h3 id="hitl-title">🚦 Manual Intervention Review Required</h3>
+                            <span class="pill danger">ACTION NEEDED</span>
+                        </div>
+                        <p class="hitl-desc">The multi-agent state-machine has paused. Inspect assembled details in the inspector. Leave reviews or click Approve to proceed.</p>
+                        <div class="form-group">
+                            <label for="hitl-feedback">Approval comments / Revision requests</label>
+                            <textarea id="hitl-feedback" rows="2" placeholder="Input adjustment instructions if rejecting, otherwise click Approve..."></textarea>
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn btn-secondary flex-1" onclick="submitHITL('REJECTED')">Reject & Request Revision</button>
+                            <button class="btn btn-primary flex-1" onclick="submitHITL('APPROVED')">Approve & Release</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="right-column">
+                    <div class="glass-card terminal-card">
+                        <div class="card-header">
+                            <h3>💬 Real-Time Swarm Traces</h3>
+                            <span class="pill success">Live Auditor Log</span>
+                        </div>
+                        <div class="terminal-body" id="terminal-logs">
+                            <div class="terminal-line system">Waiting for event stream trigger to capture lifecycle audits...</div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card inspector-card">
+                        <div class="tabs-header">
+                            <button class="tab-btn active" id="tab-btn-spec" onclick="switchTab('tab-spec')">Consolidated Customer Profile</button>
+                            <button class="tab-btn" id="tab-btn-outreach" onclick="switchTab('tab-outreach')">Draft Outreach copy</button>
+                        </div>
+                        <div class="tabs-body">
+                            <div class="tab-pane active" id="tab-spec">
+                                <div class="empty-state">No profile loaded. Select a customer or trigger an event above.</div>
+                            </div>
+                            <div class="tab-pane" id="tab-outreach">
+                                <div class="empty-state">No proposed communication draft yet. Trigger an active case pipeline.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="table-container">
-                <table class="history-table">
-                    <thead>
-                        <tr>
-                            <th>Case ID</th>
-                            <th>Customer</th>
-                            <th>Trigger Event</th>
-                            <th>State Status</th>
-                            <th>Compliance Pass</th>
-                            <th>Date Triggered</th>
-                        </tr>
-                    </thead>
-                    <tbody id="history-rows">
-                        <!-- Populated by JS -->
-                    </tbody>
-                </table>
-            </div>
-        </section>
+
+            <section class="glass-card historic-grid">
+                <div class="card-header">
+                    <h3>📜 Recent Swarm Intervention History</h3>
+                    <span class="pill">Historic Log</span>
+                </div>
+                <div class="table-container">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Case ID</th>
+                                <th>Customer</th>
+                                <th>Trigger Event</th>
+                                <th>State Status</th>
+                                <th>Compliance Pass</th>
+                                <th>Date Triggered</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-rows"></tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
     </div>
 
     <script src="app.js"></script>

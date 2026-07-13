@@ -218,3 +218,10 @@ def get_all_interactions():
 
 # Run init_db automatically on import
 init_db()
+
+# Observability tables share the same SQLite file
+try:
+    from services import observability as _obs
+    _obs.init_observability_tables()
+except Exception:
+    pass

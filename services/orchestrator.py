@@ -23,7 +23,8 @@ class OneServOrchestrator:
         assembled_profile = await self.adapter.execute_task(
             prompt=prompt_asm,
             system_instruction=system_instruction_asm,
-            context_artifacts={"raw_customer": raw_cust}
+            context_artifacts={"raw_customer": raw_cust, "customer_id": customer_id},
+            interaction_id=interaction_id,
         )
         
         database.update_interaction_artifacts(interaction_id, {"assembled_profile": assembled_profile})
@@ -62,8 +63,10 @@ class OneServOrchestrator:
             system_instruction=system_instruction_pro,
             context_artifacts={
                 "customer_name": raw_cust["crm"]["name"],
-                "event_type": event_type
-            }
+                "event_type": event_type,
+                "customer_id": raw_cust["crm"]["id"],
+            },
+            interaction_id=interaction_id,
         )
         database.update_interaction_artifacts(interaction_id, {"proposed_outreach": outreach})
         database.insert_trace(interaction_id, "PROACTIVE", "Proactive retention campaign drafted.")
@@ -78,8 +81,10 @@ class OneServOrchestrator:
             system_instruction=system_instruction_diag,
             context_artifacts={
                 "customer_name": raw_cust["crm"]["name"],
-                "balance": balance
-            }
+                "balance": balance,
+                "customer_id": raw_cust["crm"]["id"],
+            },
+            interaction_id=interaction_id,
         )
         database.update_interaction_artifacts(interaction_id, {"proposed_outreach": outreach})
         database.insert_trace(interaction_id, "DIAGNOSTICS", "Settlement proposal and billing balance adjustment generated.")
@@ -91,7 +96,8 @@ class OneServOrchestrator:
         audit_report = await self.adapter.execute_task(
             prompt="Audit proposed support communication copy",
             system_instruction=system_instruction_qa,
-            context_artifacts={"proposed_outreach": outreach_content}
+            context_artifacts={"proposed_outreach": outreach_content},
+            interaction_id=interaction_id,
         )
         
         # Parse compliance pass
@@ -129,8 +135,10 @@ class OneServOrchestrator:
                 system_instruction=system_instruction_pro,
                 context_artifacts={
                     "customer_name": raw_cust["crm"]["name"],
-                    "event_type": event_type
-                }
+                    "event_type": event_type,
+                    "customer_id": raw_cust["crm"]["id"],
+                },
+                interaction_id=interaction_id,
             )
             database.update_interaction_artifacts(interaction_id, {
                 "proposed_outreach": revised_outreach,
@@ -174,8 +182,10 @@ class OneServOrchestrator:
                 system_instruction=system_instruction_diag,
                 context_artifacts={
                     "customer_name": raw_cust["crm"]["name"],
-                    "balance": balance
-                }
+                    "balance": balance,
+                    "customer_id": raw_cust["crm"]["id"],
+                },
+                interaction_id=interaction_id,
             )
             database.update_interaction_artifacts(interaction_id, {
                 "proposed_outreach": revised_outreach,
