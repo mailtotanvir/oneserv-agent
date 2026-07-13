@@ -8,6 +8,7 @@ TEST_DB_PATH = os.path.join(os.environ.get("TEMP", "/tmp"), "test_oneserv.db")
 config.DB_PATH = TEST_DB_PATH
 
 import database
+from services import observability
 from services.orchestrator import OneServOrchestrator
 
 class TestCustomerSwarm(unittest.TestCase):
@@ -16,6 +17,7 @@ class TestCustomerSwarm(unittest.TestCase):
         if os.path.exists(TEST_DB_PATH):
             os.remove(TEST_DB_PATH)
         database.init_db()
+        observability.init_observability_tables()
         cls.orchestrator = OneServOrchestrator()
 
     @classmethod
